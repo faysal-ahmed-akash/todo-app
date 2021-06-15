@@ -125,7 +125,10 @@ const Todo = ({
             <ImCancelCircle className='cancel-icon' onClick={cancelHandler} />
           </div>
         ) : (
-          <div className={`todo-name ${checked ? 'todo-completed' : ''}`}>
+          <div
+            id='todo-name'
+            className={`${checked ? 'todo-completed' : 'todo-name'}`}
+          >
             {name}
           </div>
         )}
@@ -134,7 +137,7 @@ const Todo = ({
         {checked ? (
           <input
             type='checkbox'
-            className={`complete-input ${isEdit ? 'complete-input-edit' : ''}`}
+            className={`${isEdit ? 'complete-input-edit' : 'complete-input'}`}
             onChange={checkHandler}
             checked
           />
@@ -153,14 +156,14 @@ const Todo = ({
 }
 
 Todo.defaultProps = {
-  id: null,
+  id: 0,
   name: '',
   checked: false,
   isEdit: false,
-  list: [{ name: '', checked: false, isEdit: false, id: null }],
-  completeList: [{ name: '', checked: false, isEdit: false, id: null }],
+  list: [{ name: '', checked: false, isEdit: false, id: 0 }],
+  completeList: [{ name: '', checked: false, isEdit: false, id: 0 }],
   setCompleteList: () => {},
-  incompleteList: [{ name: '', checked: false, isEdit: false, id: null }],
+  incompleteList: [{ name: '', checked: false, isEdit: false, id: 0 }],
   setIncompleteList: () => {},
   editText: '',
   setEditText: () => {},

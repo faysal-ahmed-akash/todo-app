@@ -33,8 +33,8 @@ const Search = ({
 Search.defaultProps = {
   searchText: '',
   setSearchText: () => {},
-  completeList: [{ name: '', checked: false, isEdit: false, id: null }],
-  incompleteList: [{ name: '', checked: false, isEdit: false, id: null }],
+  completeList: [{ name: '', checked: false, isEdit: false, id: 0 }],
+  incompleteList: [{ name: '', checked: false, isEdit: false, id: 0 }],
 }
 
 Search.propTypes = {

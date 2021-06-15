@@ -48,11 +48,11 @@ const TodoList = ({
 }
 
 TodoList.defaultProps = {
-  list: [{ name: '', checked: false, isEdit: false, id: null }],
+  list: [{ name: '', checked: false, isEdit: false, id: 0 }],
   title: '',
-  completeList: [{ name: '', checked: false, isEdit: false, id: null }],
+  completeList: [{ name: '', checked: false, isEdit: false, id: 0 }],
   setCompleteList: () => {},
-  incompleteList: [{ name: '', checked: false, isEdit: false, id: null }],
+  incompleteList: [{ name: '', checked: false, isEdit: false, id: 0 }],
   setIncompleteList: () => {},
   editText: '',
   setEditText: () => {},

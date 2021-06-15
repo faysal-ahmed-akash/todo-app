@@ -8,6 +8,7 @@ const Form = ({ text, setText, incompleteList, setIncompleteList }) => {
 
   const submitTodoHandler = (e) => {
     e.preventDefault()
+
     if (text === '') console.log('Field is empty')
     else {
       setIncompleteList([
@@ -44,7 +45,7 @@ const Form = ({ text, setText, incompleteList, setIncompleteList }) => {
 Form.defaultProps = {
   text: '',
   setText: () => {},
-  incompleteList: [{ name: '', checked: false, isEdit: false, id: null }],
+  incompleteList: [{ name: '', checked: false, isEdit: false, id: 0 }],
   setIncompleteList: () => {},
 }
 
