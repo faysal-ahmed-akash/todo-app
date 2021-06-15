@@ -120,6 +120,7 @@ const Todo = ({
               className='todo-name-edit'
               value={editText}
               onChange={editTextHandler}
+              autoFocus
             />
             <FaRegSave className='save-icon' onClick={saveHandler} />
             <ImCancelCircle className='cancel-icon' onClick={cancelHandler} />
