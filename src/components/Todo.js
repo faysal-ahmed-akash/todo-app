@@ -1,208 +1,96 @@
-import { FaEdit, FaTrash, FaRegSave } from 'react-icons/fa'
-import { ImCancelCircle } from 'react-icons/im'
-import PropTypes from 'prop-types'
+import { useState } from 'react';
+import Input from './Input';
+import { FaEdit, FaTrash, FaRegSave } from 'react-icons/fa';
+import { ImCancelCircle } from 'react-icons/im';
+import PropTypes from 'prop-types';
 
 const Todo = ({
   id,
   name,
   checked,
-  isEdit,
-  list,
-  completeList,
-  setCompleteList,
-  incompleteList,
-  setIncompleteList,
-  editText,
-  setEditText,
+  isEditing,
+  onChangeTodos,
+  onEdit,
+  onEditCancel,
+  onSave,
 }) => {
-  const deleteHandler = () => {
-    const newList = list.filter((item) => item.id !== id)
-    const findIdFromIncompleteList = incompleteList.find(
-      (item) => item.id === id
-    )
+  const [newName, setNewName] = useState('');
 
-    if (findIdFromIncompleteList) setIncompleteList([...newList])
-    else setCompleteList([...newList])
-  }
-
-  const checkHandler = () => {
-    for (let i in list) {
-      if (list[i].id === id) {
-        list[i].checked = !list[i].checked
-        if (list[i].checked) setCompleteList([...completeList, list[i]])
-        else setIncompleteList([...incompleteList, list[i]])
-        list.splice(i, 1)
-        break
-      }
-    }
-  }
-
-  const editTextHandler = (e) => {
-    setEditText(e.target.value)
-  }
-
-  const editHandler = () => {
-    setEditText(name)
-    const newList = list.map((item) => {
-      if (item.id === id) {
-        return {
-          ...item,
-          isEdit: !item.isEdit,
-        }
-      }
-      return { ...item, isEdit: false }
-    })
-
-    const findIdFromIncompleteList = incompleteList.find(
-      (item) => item.id === id
-    )
-
-    if (findIdFromIncompleteList) {
-      setIncompleteList([...newList])
-      setCompleteList(
-        completeList.map((item) => {
-          return { ...item, isEdit: false }
-        })
-      )
-    } else {
-      setCompleteList([...newList])
-      setIncompleteList(
-        incompleteList.map((item) => {
-          return { ...item, isEdit: false }
-        })
-      )
-    }
-  }
-
-  const saveHandler = () => {
-    if (editText === '') console.log('Field is empty')
-    else {
-      const newList = list.map((item) => {
-        if (item.id === id) {
-          return { ...item, name: editText, isEdit: false }
-        }
-        return item
-      })
-
-      const findIdFromIncompleteList = incompleteList.find(
-        (item) => item.id === id
-      )
-
-      if (findIdFromIncompleteList) setIncompleteList([...newList])
-      else setCompleteList([...newList])
-
-      setEditText('')
-    }
-  }
-
-  const cancelHandler = () => {
-    setEditText('')
-
-    const newList = list.map((item) => {
-      return { ...item, isEdit: false }
-    })
-
-    const findIdFromIncompleteList = incompleteList.find(
-      (item) => item.id === id
-    )
-
-    if (findIdFromIncompleteList) setIncompleteList([...newList])
-    else setCompleteList([...newList])
-  }
+  let isChecked = false;
+  if (checked) isChecked = true;
 
   return (
-    <li>
-      <div>
-        {isEdit ? (
-          <div className='list-field'>
-            <input
-              type='text'
-              className='todo-name-edit'
-              value={editText}
-              onChange={editTextHandler}
-              autoFocus
-            />
-            <FaRegSave className='save-icon' onClick={saveHandler} />
-            <ImCancelCircle className='cancel-icon' onClick={cancelHandler} />
-          </div>
-        ) : (
-          <div
-            id='todo-name'
-            className={`${checked ? 'todo-completed' : 'todo-name'}`}
-          >
-            {name}
-          </div>
-        )}
-      </div>
-      <div className='list-icons'>
-        {checked ? (
-          <input
-            type='checkbox'
-            className={`${isEdit ? 'complete-input-edit' : 'complete-input'}`}
-            onChange={checkHandler}
-            checked
+    <>
+      {isEditing ? (
+        <li className='editing-list'>
+          <Input
+            type='text'
+            name={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            focus={true}
           />
-        ) : (
-          <input
-            type='checkbox'
-            className={`complete-input ${isEdit ? 'complete-input-edit' : ''}`}
-            onChange={checkHandler}
+          <FaRegSave
+            onClick={() => {
+              onChangeTodos(id, newName, checked, 0);
+              onSave();
+              setNewName('');
+            }}
+            className='save-icon'
           />
-        )}
-        <FaEdit className='edit-icon' onClick={editHandler} />
-        <FaTrash className='trash-icon' onClick={deleteHandler} />
-      </div>
-    </li>
-  )
-}
+
+          <ImCancelCircle
+            onClick={() => {
+              onEditCancel();
+              setNewName('');
+            }}
+            className='cancel-icon'
+          />
+        </li>
+      ) : (
+        <li className='not-editing-list'>
+          <div className={checked ? 'todo-completed' : 'todo-name'}>{name}</div>
+          <Input
+            type='checkbox'
+            onChange={() => onChangeTodos(id, name, !checked, 0)}
+            isChecked={isChecked}
+          />
+          <FaEdit
+            onClick={() => {
+              onEdit(id);
+              setNewName(name);
+            }}
+            className='edit-icon'
+          />
+          <FaTrash
+            onClick={() => onChangeTodos(id, name, checked, 1)}
+            className='trash-icon'
+          />
+        </li>
+      )}
+    </>
+  );
+};
 
 Todo.defaultProps = {
-  id: 0,
+  id: null,
   name: '',
   checked: false,
-  isEdit: false,
-  list: [{ name: '', checked: false, isEdit: false, id: 0 }],
-  completeList: [{ name: '', checked: false, isEdit: false, id: 0 }],
-  setCompleteList: () => {},
-  incompleteList: [{ name: '', checked: false, isEdit: false, id: 0 }],
-  setIncompleteList: () => {},
-  editText: '',
-  setEditText: () => {},
-}
+  isEditing: false,
+  onChangeTodos: () => {},
+  onEdit: () => {},
+  onEditCancel: () => {},
+  onSave: () => {},
+};
 
 Todo.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.number,
   name: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
-  isEdit: PropTypes.bool.isRequired,
-  list: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      checked: PropTypes.bool,
-      isEdit: PropTypes.bool,
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  completeList: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      checked: PropTypes.bool,
-      isEdit: PropTypes.bool,
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  setCompleteList: PropTypes.func.isRequired,
-  incompleteList: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      checked: PropTypes.bool,
-      isEdit: PropTypes.bool,
-      id: PropTypes.number,
-    })
-  ).isRequired,
-  setIncompleteList: PropTypes.func.isRequired,
-  editText: PropTypes.string.isRequired,
-  setEditText: PropTypes.func.isRequired,
-}
+  isEditing: PropTypes.bool.isRequired,
+  onChangeTodos: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onEditCancel: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+};
 
-export default Todo
+export default Todo;
